@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
@@ -27,6 +28,10 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
 
     Transform cameraTransform;
+    [Header("JumpPlayer")]
+    public float jumpForce;
+    public KeyCode jumKey = KeyCode.Space;
+    public float cooldownJump;
     void Start()
     {
         cameraTransform = Camera.main.transform;
@@ -48,12 +53,23 @@ public class PlayerMovement : MonoBehaviour
     {
         MoveErrant();
         RotatePlayer();
+        
     }
 
     void ErrantInput()
     {
         horInput = Input.GetAxisRaw("Horizontal");
         verInput = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(jumKey)&&grounded)
+        {
+            Invoke(nameof(JumpPlayer), cooldownJump);
+            grounded = false;
+        }
+    }
+    void JumpPlayer()
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
     void MoveErrant()
